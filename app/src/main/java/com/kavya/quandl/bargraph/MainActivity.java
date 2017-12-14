@@ -42,7 +42,7 @@ public class MainActivity extends AppCompatActivity {
 			}
 			mChart.setBottomTextList(new ArrayList<String>(graphPoints));
 			mChart.setGraphAttributes(Color.WHITE,Color.WHITE);
-			mChart.setValues(fResult);
+			mChart.setDataList(fResult,100);
 			mChart.invalidate();
 		}
 	}

@@ -12,7 +12,6 @@ import android.view.View;
 import com.kavya.quandl.bargraph.utils.AppUtils;
 
 import java.util.ArrayList;
-import java.util.List;
 
 public class DrawBarChart extends View {
 
@@ -56,10 +55,6 @@ public class DrawBarChart extends View {
 
 	public DrawBarChart(Context context, @Nullable AttributeSet attrs, int defStyleAttr) {
 		super(context, attrs, defStyleAttr);
-	}
-
-	public void setValues(ArrayList<Float> values) {
-		this.values = values;
 	}
 
 	public void setGraphAttributes(int textColor, int graphColor) {
