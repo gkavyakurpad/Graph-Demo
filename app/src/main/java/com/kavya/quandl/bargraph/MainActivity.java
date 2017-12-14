@@ -32,10 +32,8 @@ public class MainActivity extends AppCompatActivity {
 		if (dataSet != null) {
 			mDataSet = dataSet;
 			List<List<String>> dataPoints = mDataSet.getData();
-			System.out.println("dataPoints" + dataPoints.get(0));
 			List<String> dataValues = dataPoints.get(0);
 			List<String> graphPoints = dataValues.subList(1, dataValues.size());
-			//float fResult[] = new float[graphPoints.size()];
 			ArrayList<Float> fResult = new ArrayList<>(graphPoints.size());
 			for(int i = 0; i < graphPoints.size(); i++) {
 				float number = Float.parseFloat(graphPoints.get(i));
