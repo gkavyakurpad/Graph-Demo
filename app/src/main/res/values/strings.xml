@@ -1,0 +1,29 @@
+<resources>
+    <string name="app_name">Assignment-2</string>
+
+    <!-- strings for layout_top -->
+
+    <string name="left_arrow">Left Arrow</string>
+    <string name="wo">WO</string>
+    <string name="right_arrow">Right Arrow</string>
+    <string name="month">november 1</string>
+    <string name="time">Laatst bijgewerkt: 2 nov. 2017 @ 11:44 a.m.</string>
+    <string name="ahi">AHI</string>
+    <string name="two">2</string>
+    <string name="gebruik">Gebruik</string>
+    <string name="three_hrs">3:33hrs</string>
+    <string name="passend_masker">Passend masker</string>
+    <string name="forty_eight">48%</string>
+
+
+    <!-- strings for layout_bottom -->
+
+    <string name="gebruikgegevens">Gebruikgegevens</string>
+    <string name="min_druk">Min.druk</string>
+    <string name="max_druk">Max.druk</string>
+    <string name="ninety_druk">90% druk</string>
+    <string name="min_drukValue">8.5cmH2O</string>
+    <string name="max_drukValue">13.0cmH2O</string>
+    <string name="h2o">9.5cmH2O</string>
+
+</resources>
