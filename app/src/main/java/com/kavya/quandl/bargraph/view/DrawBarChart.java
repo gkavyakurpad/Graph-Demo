@@ -95,10 +95,10 @@ public class DrawBarChart extends View {
 		values = new ArrayList<Float>();
 		if (max == 0) max = 1;
 
-		for (Float integer : list) {
-			values.add(1 - (float) integer / (float) max);
+		for (Float f : list) {
+			values.add(1 -  f / (float) max);
 		}
-		setMinimumWidth(2);
+		//setMinimumWidth(2);
 	}
 
 	@Override

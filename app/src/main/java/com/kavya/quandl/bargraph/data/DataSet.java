@@ -8,6 +8,8 @@ import com.google.gson.annotations.SerializedName;
 import com.j256.ormlite.field.DatabaseField;
 import com.j256.ormlite.table.DatabaseTable;
 
+import java.lang.reflect.Field;
+import java.lang.reflect.ParameterizedType;
 import java.util.List;
 
 /**
@@ -42,7 +44,6 @@ public class DataSet implements Parcelable {
 	@Expose
 	private String frequency;
 
-	@DatabaseField(columnName = "data")
 	@SerializedName("data")
 	@Expose
 	private List<List<String>> data = null;
@@ -76,7 +77,17 @@ public class DataSet implements Parcelable {
 		this.startDate = ((String) in.readValue((String.class.getClassLoader())));
 		this.endDate = ((String) in.readValue((String.class.getClassLoader())));
 		this.frequency = ((String) in.readValue((String.class.getClassLoader())));
-		in.readList(this.data, (java.util.List.class.getClassLoader()));
+
+		Field dataField = null;
+		try {
+			dataField = DataSet.class.getDeclaredField("data");
+		} catch (NoSuchFieldException e) {
+			e.printStackTrace();
+		}
+		ParameterizedType stringListType = (ParameterizedType) dataField.getGenericType();
+		Class<?> stringListClass = (Class<?>) stringListType.getActualTypeArguments()[0];
+
+		in.readList(this.data, stringListClass.getClassLoader());
 		this.collapse = ((Object) in.readValue((Object.class.getClassLoader())));
 		this.order = ((Object) in.readValue((Object.class.getClassLoader())));
 	}

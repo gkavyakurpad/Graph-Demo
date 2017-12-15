@@ -1,5 +1,8 @@
 package com.kavya.quandl.bargraph.presenter;
 
+import android.content.Context;
+import android.view.LayoutInflater;
+import android.view.View;
 import android.widget.Toast;
 
 import com.j256.ormlite.android.apptools.OpenHelperManager;
@@ -12,6 +15,8 @@ import com.kavya.quandl.bargraph.network.ApiManager;
 import com.kavya.quandl.bargraph.persistence.DbHelper;
 import com.kavya.quandl.bargraph.utils.AppUtils;
 
+
+import java.util.List;
 
 import io.reactivex.Observer;
 import io.reactivex.android.schedulers.AndroidSchedulers;
@@ -28,6 +33,8 @@ public class DataPresenter {
 	private MainActivity mMainActivity;
 	private DataSet mDataSet;
 	private DbHelper databaseHelper = null;
+	private Dao<DataSet, Integer> dataSetDao;
+	private List<DataSet> dataSetList;
 
 
 	public DataPresenter(MainActivity activity, ApiManager apiManager) {
@@ -51,6 +58,7 @@ public class DataPresenter {
 						@Override
 						public void onComplete() {
 							mMainActivity.updateView(mDataSet);
+							fetchData();
 							Toast.makeText(mMainActivity, "Completed", Toast.LENGTH_SHORT).show();
 						}
 
@@ -62,12 +70,12 @@ public class DataPresenter {
 						@Override
 						public void onNext(ResponseDataSet movieResultListModel) {
 							mDataSet = movieResultListModel.getDatasetData();
-//							try {
-//								final Dao<DataSet, Integer> informationDao = getHelper().getInformationDao();
-//								informationDao.create(mDataSet);
-//							} catch (java.sql.SQLException e) {
-//								e.printStackTrace();
-//							}
+							try {
+								dataSetDao = getHelper().getInformationDao();
+								dataSetDao.create(mDataSet);
+							} catch (java.sql.SQLException e) {
+								e.printStackTrace();
+							}
 						}
 					});
 		} else {
@@ -88,6 +96,15 @@ public class DataPresenter {
 		if (databaseHelper != null) {
 			OpenHelperManager.releaseHelper();
 			databaseHelper = null;
+		}
+	}
+
+	private void fetchData() {
+		try {
+			dataSetDao = getHelper().getInformationDao();
+			dataSetList = dataSetDao.queryForAll();
+		} catch (java.sql.SQLException e) {
+			e.printStackTrace();
 		}
 	}
 
