@@ -15,7 +15,6 @@ import java.util.List;
 public class MainActivity extends AppCompatActivity {
 
 	private DataPresenter mDataSetPresenter;
-	private DataSet mDataSet;
 	private DrawBarChart mChart;
 
 	@Override
@@ -30,20 +29,25 @@ public class MainActivity extends AppCompatActivity {
 
 	public void updateView(DataSet dataSet) {
 		if (dataSet != null) {
-			mDataSet = dataSet;
-			List<List<String>> dataPoints = mDataSet.getData();
+			List<List<String>> dataPoints = dataSet.getData();
 			List<String> dataValues = dataPoints.get(0);
 			List<String> graphPoints = dataValues.subList(1, dataValues.size());
 			ArrayList<Float> fResult = new ArrayList<>(graphPoints.size());
-			for(int i = 0; i < graphPoints.size(); i++) {
+			for (int i = 0; i < graphPoints.size(); i++) {
 				float number = Float.parseFloat(graphPoints.get(i));
-				float rounded =  Math.round(number * 1000) / 1000f;
+				float rounded = Math.round(number * 1000) / 1000f;
 				fResult.add(rounded);
 			}
 			mChart.setBottomTextList(new ArrayList<String>(graphPoints));
-			mChart.setGraphAttributes(Color.WHITE,Color.WHITE);
-			mChart.setDataList(fResult,100);
+			mChart.setGraphAttributes(Color.WHITE, Color.WHITE);
+			mChart.setDataList(fResult, 100);
 			mChart.invalidate();
 		}
+	}
+
+	@Override
+	protected void onDestroy() {
+		super.onDestroy();
+		mDataSetPresenter.clear();
 	}
 }

@@ -1,8 +1,5 @@
 package com.kavya.quandl.bargraph.presenter;
 
-import android.content.Context;
-import android.view.LayoutInflater;
-import android.view.View;
 import android.widget.Toast;
 
 import com.j256.ormlite.android.apptools.OpenHelperManager;
@@ -15,10 +12,14 @@ import com.kavya.quandl.bargraph.network.ApiManager;
 import com.kavya.quandl.bargraph.persistence.DbHelper;
 import com.kavya.quandl.bargraph.utils.AppUtils;
 
+import org.reactivestreams.Subscriber;
+import org.reactivestreams.Subscription;
 
 import java.util.List;
 
+import io.reactivex.Observable;
 import io.reactivex.Observer;
+import io.reactivex.Scheduler;
 import io.reactivex.android.schedulers.AndroidSchedulers;
 import io.reactivex.disposables.Disposable;
 import io.reactivex.schedulers.Schedulers;
@@ -34,7 +35,6 @@ public class DataPresenter {
 	private DataSet mDataSet;
 	private DbHelper databaseHelper = null;
 	private Dao<DataSet, Integer> dataSetDao;
-	private List<DataSet> dataSetList;
 
 
 	public DataPresenter(MainActivity activity, ApiManager apiManager) {
@@ -43,8 +43,12 @@ public class DataPresenter {
 	}
 
 	public void loadDataSet() {
-		if (AppUtils.isNetworkConnected(mMainActivity)) {
 
+		List<DataSet> dataList = fetchData();
+		if (dataList != null && dataList.size() > 0) {
+			DataSet dataSetTable = dataList.get(0);
+			mMainActivity.updateView(dataSetTable);
+		} else if (AppUtils.isNetworkConnected(mMainActivity)) {
 			manager.getiResultsData().getDataSet(BuildConfig.API_KEY)
 					.subscribeOn(Schedulers.io())
 					.observeOn(AndroidSchedulers.mainThread())
@@ -58,7 +62,6 @@ public class DataPresenter {
 						@Override
 						public void onComplete() {
 							mMainActivity.updateView(mDataSet);
-							fetchData();
 							Toast.makeText(mMainActivity, "Completed", Toast.LENGTH_SHORT).show();
 						}
 
@@ -76,6 +79,7 @@ public class DataPresenter {
 							} catch (java.sql.SQLException e) {
 								e.printStackTrace();
 							}
+							//addToDb(mDataSet);
 						}
 					});
 		} else {
@@ -92,20 +96,55 @@ public class DataPresenter {
 	}
 
 
-	protected void clear() {
+	public void clear() {
 		if (databaseHelper != null) {
 			OpenHelperManager.releaseHelper();
 			databaseHelper = null;
 		}
 	}
 
-	private void fetchData() {
+	private List<DataSet> fetchData() {
 		try {
 			dataSetDao = getHelper().getInformationDao();
-			dataSetList = dataSetDao.queryForAll();
+			return dataSetDao.queryForAll();
 		} catch (java.sql.SQLException e) {
 			e.printStackTrace();
 		}
+		return null;
 	}
+
+	private void addToDb(DataSet dataSet) {
+		Observable.just(dataSet)
+				.subscribeOn(Schedulers.newThread())
+				.observeOn(Schedulers.computation())
+				.subscribe(new Observer<DataSet>() {
+					@Override
+					public void onSubscribe(Disposable d) {
+
+					}
+
+					@Override
+					public void onNext(DataSet dataSet) {
+						try {
+							dataSetDao = getHelper().getInformationDao();
+							dataSetDao.create(mDataSet);
+						} catch (java.sql.SQLException e) {
+							e.printStackTrace();
+						}
+					}
+
+					@Override
+					public void onError(Throwable e) {
+
+					}
+
+					@Override
+					public void onComplete() {
+
+					}
+				});
+
+	}
+
 
 }

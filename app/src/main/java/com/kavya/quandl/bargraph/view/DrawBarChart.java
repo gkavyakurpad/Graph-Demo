@@ -21,7 +21,6 @@ public class DrawBarChart extends View {
 	private Rect rect;
 	private int barWidth;
 	private int bottomTextDescent;
-	private boolean autoSetWidth = true;
 	private int topMargin;
 	private int bottomTextHeight;
 	private ArrayList<String> bottomTextList = new ArrayList<String>();
@@ -77,7 +76,7 @@ public class DrawBarChart extends View {
 			if (bottomTextHeight < r.height()) {
 				bottomTextHeight = r.height();
 			}
-			if (autoSetWidth && (barWidth < r.width())) {
+			if (barWidth < r.width()) {
 				barWidth = r.width();
 			}
 			if (bottomTextDescent < (Math.abs(r.bottom))) {
@@ -98,7 +97,7 @@ public class DrawBarChart extends View {
 		for (Float f : list) {
 			values.add(1 -  f / (float) max);
 		}
-		//setMinimumWidth(2);
+		setMinimumWidth(2);
 	}
 
 	@Override

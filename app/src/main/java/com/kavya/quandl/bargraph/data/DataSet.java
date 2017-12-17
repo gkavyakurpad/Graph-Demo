@@ -7,6 +7,7 @@ import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
 import com.j256.ormlite.field.DatabaseField;
 import com.j256.ormlite.table.DatabaseTable;
+import com.kavya.quandl.bargraph.persistence.SerializableCollectionsType;
 
 import java.lang.reflect.Field;
 import java.lang.reflect.ParameterizedType;
@@ -44,9 +45,11 @@ public class DataSet implements Parcelable {
 	@Expose
 	private String frequency;
 
+	@DatabaseField(columnName = "name", persisterClass = SerializableCollectionsType.class)
 	@SerializedName("data")
 	@Expose
 	private List<List<String>> data = null;
+
 	@SerializedName("collapse")
 	@Expose
 	private Object collapse;
@@ -81,13 +84,13 @@ public class DataSet implements Parcelable {
 		Field dataField = null;
 		try {
 			dataField = DataSet.class.getDeclaredField("data");
+			ParameterizedType stringListType = (ParameterizedType) dataField.getGenericType();
+			Class<?> stringListClass = (Class<?>) stringListType.getActualTypeArguments()[0];
+
+			in.readList(this.data, stringListClass.getClassLoader());
 		} catch (NoSuchFieldException e) {
 			e.printStackTrace();
 		}
-		ParameterizedType stringListType = (ParameterizedType) dataField.getGenericType();
-		Class<?> stringListClass = (Class<?>) stringListType.getActualTypeArguments()[0];
-
-		in.readList(this.data, stringListClass.getClassLoader());
 		this.collapse = ((Object) in.readValue((Object.class.getClassLoader())));
 		this.order = ((Object) in.readValue((Object.class.getClassLoader())));
 	}
